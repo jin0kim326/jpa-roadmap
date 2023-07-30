@@ -15,18 +15,25 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    /**
+     * cascade ALL옵션
+     * 각 엔티티를 저장하기 위해서는 모두 각자 엔티티를 persist해야하는게 기본인데 이옵션이 있으면 같이 넣어줌
+     * persist(orderItemA); //옵션적용시 생략가능
+     * persist(orderItemB); //옵션적용시 생략가능
+     * persist(order)
+     */
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     /**
      * 1대1 관계의 경우는 FK를 어느곳에 두든 상관없음
      * => 데이터를 많이 접근하는 테이블에 fk를 두는것을 권장 (주소테이블에 대한 접근보다는 오더테이블 접근이 많음)
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -34,4 +41,20 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; //주문상태 [ORDER,CANCEL]
+
+    //== 연관관계 메서드==//
+    public void setMember(Member member) {
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
 }

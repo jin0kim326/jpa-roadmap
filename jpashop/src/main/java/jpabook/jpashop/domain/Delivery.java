@@ -11,7 +11,7 @@ public class Delivery {
     private Long id;
 
 
-    @OneToOne(mappedBy = "delivery")
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Order order;
 
     @Embedded
@@ -20,4 +20,7 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status; // READY, COMP
 
+    protected void setOrder(Order order) {
+        this.order = order;
+    }
 }
