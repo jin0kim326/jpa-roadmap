@@ -20,6 +20,5 @@ public class JpashopApplication {
 	 *  - 실무에서 모든 연관관계는 지연로딩으로 설정해야함
 	 *  - xxxToOne은 default가 EAGER이기 때문에 LAZY로 바꿔야함
 	 *  3. 컬렉션은 필드에서 바로 초기화 하는 것이 안전
-	 *
 	 */
 }
