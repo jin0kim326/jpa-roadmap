@@ -1,0 +1,6 @@
+tap "adoptopenjdk/openjdk"
+tap "homebrew/bundle"
+tap "homebrew/core"
+tap "homebrew/services"
+brew "nvm"
+brew "tomcat@8"
