@@ -1,0 +1,8 @@
+server:
+  port: 8091
+
+logging:
+  level:
+    org.hibernate.SQL: debug #logger? ?? ????
+#    org.hibernate.type: trace
+
