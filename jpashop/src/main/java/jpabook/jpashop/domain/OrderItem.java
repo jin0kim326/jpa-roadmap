@@ -2,10 +2,13 @@ package jpabook.jpashop.domain;
 
 import jpabook.jpashop.domain.item.Item;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  //createOrderItem 이라는 별도 메소드를 제공하기때문에 막는다.
 public class OrderItem {
     @Id @GeneratedValue
     @Column(name = "order_item_id")
