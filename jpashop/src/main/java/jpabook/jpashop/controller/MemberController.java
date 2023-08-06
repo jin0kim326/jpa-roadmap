@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -27,7 +29,6 @@ public class MemberController {
         if(result.hasErrors()) {
             return "members/createMemberForm";
         }
-
         Address address = new Address(memberForm.getCity(), memberForm.getStreet(), memberForm.getZipcode());
 
         Member member = new Member();
@@ -36,6 +37,12 @@ public class MemberController {
 
         memberService.join(member);
         return "redirect:/";
+    }
 
+    @GetMapping("/members")
+    public String memberList(Model model) {
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+        return "members/memberList";
     }
 }
