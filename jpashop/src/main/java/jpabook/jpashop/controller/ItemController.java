@@ -3,6 +3,7 @@ package jpabook.jpashop.controller;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.service.ItemService;
+import jpabook.jpashop.service.UpdateItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,6 +51,7 @@ public class ItemController {
         BookForm form = new BookForm();
         form.setId(item.getId());
         form.setName(item.getName());
+        form.setStockQuantity(item.getStockQuantity());
         form.setPrice(item.getPrice());
         form.setAuthor(item.getAuthor());
         form.setIsbn(item.getIsbn());
@@ -60,14 +62,27 @@ public class ItemController {
 
     @PostMapping("items/{itemId}/edit")
     public String updateItem(@PathVariable("itemId") Long itemId, @ModelAttribute("form") BookForm form) {
-        Book book = new Book();
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
-        itemService.saveItem(book);
-        return "redircet:/";
+
+        /**
+         * Worst Example
+         * -> 어설픈 엔티티 생성 및 병합(merge) 사용
+         */
+//        Book book = new Book();
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+//        itemService.saveItem(book);
+
+        /**
+         * Best Example
+         * -> 어설픈 엔티티 생성X 및 변경 감지 사용
+         */
+        UpdateItemDto updateItemDto = new UpdateItemDto(form);
+        itemService.updateItem(itemId, updateItemDto);
+
+        return "redirect:/";
     }
 }
