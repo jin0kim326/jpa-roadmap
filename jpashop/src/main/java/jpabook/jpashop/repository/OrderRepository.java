@@ -27,4 +27,16 @@ public class OrderRepository {
                 .setMaxResults(1000)
                 .getResultList();
     }
+
+    public List<Order> findAllWithMemberDelivery(OrderSearch orderSearch) {
+        return em.createQuery(" select o from Order o " +
+                                       " join fetch o.member m " +
+                                       " join fetch o.delivery d", Order.class)
+                .getResultList();
+        /**
+         * 한방쿼리로 order,member,delivery 를 select절로 가져온다.
+         * LAZY로딩도 무시함.
+         */
+    }
+
 }
