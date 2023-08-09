@@ -5,6 +5,7 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.OrderSimpleQueryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class OrderSimpleApiController {
         return result;
     }
 
+    /* 페치 조인 */
     @GetMapping("/api/v3/simple-orders")
     public List<SimpleOrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllWithMemberDelivery(new OrderSearch());
@@ -63,6 +65,28 @@ public class OrderSimpleApiController {
 
         return result;
     }
+
+    /* JPA에서 바로 DTO로 조회*/
+    @GetMapping("/api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4() {
+        List<OrderSimpleQueryDto> orders = orderRepository.findOrdersDto(new OrderSearch());
+        return orders;
+    }
+
+    /**
+     * V3 와 V4는 서로 우열을 가리기 어려움 (트레이드오프존재)
+     *
+     * V3:엔티티의 데이터를 모두 조회했기때문에 재사용성이 높음,
+     *
+     * V4:원하는 데이터를 핏하게 조회했기때문에 성능은 더 좋을수 있으나, 재사용성은 떨어짐 (성능차이는 생각보다 미비)
+     *    -> V4는 리포지토리계층이나, 화면이 변경되면 이 리포지토리코드도 변경되어야함...
+     *
+     * 🔥쿼리 방식 선택 권장순서🔥
+     * 1. 우선 엔티티를 DTO로 변환 (필수)
+     * 2. 페치 조인으로 성능 최적화 - 대부분의 성능 이슈해결
+     * 3. 그래도 안되면 DTO로 직접 조회
+     * 4. 최후의 방법은 네이티브SQL, 스프링 JDBC 템플릿을 사용해서 SQL을 직접 사용
+     */
 
     @Data
     static class SimpleOrderDto {
