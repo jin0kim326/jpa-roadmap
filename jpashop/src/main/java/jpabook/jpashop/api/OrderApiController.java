@@ -42,6 +42,27 @@ public class OrderApiController {
         return collect;
     }
 
+    /**
+     * 페치 조인으로 SQL이 한번만 실행됨
+     *
+     * distinct
+     * 1대다 조인에서 데이터 row증가 -> order엔티티수도 증가
+     * distinct 를 사용하면 중복조회 되는것을 막아줌 (스프링 3버전 이상부터는 Hibernate6 버전채용 -> distinct 자동적용됨)
+     *
+     * 🔥 단점 🔥
+     * 1대다 페치조인은 "페이징" 불가
+     * @return
+     */
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return collect;
+    }
+
     @Getter
     static class OrderDto {
         private Long orderId;

@@ -30,8 +30,8 @@ public class OrderRepository {
 
     public List<Order> findAllWithMemberDelivery(OrderSearch orderSearch) {
         return em.createQuery(" select o from Order o " +
-                                       " join fetch o.member m " +
-                                       " join fetch o.delivery d", Order.class)
+                        " join fetch o.member m " +
+                        " join fetch o.delivery d", Order.class)
                 .getResultList();
         /**
          * 한방쿼리로 order,member,delivery 를 select절로 가져온다.
@@ -41,9 +41,19 @@ public class OrderRepository {
 
     public List<OrderSimpleQueryDto> findOrdersDto(OrderSearch orderSearch) {
         return em.createQuery("select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, m.name,o.orderDate,o.status,d.address) " +
-                                " from Order o " +
-                                " join o.member m " +
-                                " join o.delivery d", OrderSimpleQueryDto.class)
+                        " from Order o " +
+                        " join o.member m " +
+                        " join o.delivery d", OrderSimpleQueryDto.class)
                 .getResultList();
+    }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o " +
+                        " join fetch o.member m " +
+                        " join fetch o.delivery d " +
+                        " join fetch o.orderItems oi " +
+                        " join fetch oi.item i", Order.class
+                ).getResultList();
     }
 }
