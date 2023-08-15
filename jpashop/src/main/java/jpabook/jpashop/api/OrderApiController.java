@@ -9,6 +9,7 @@ import jpabook.jpashop.repository.OrderSearch;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -62,6 +63,31 @@ public class OrderApiController {
 
         return collect;
     }
+
+    /**
+     * V3.1 페이징과 한계 돌파
+     * 컬렉션을 페치 조인하면 페이징이 불가능하다.
+     * Order를 기준으로 페이징 하고 싶은데 다(N)인 OrderItem을 조인하면 OrderItem이 기준이 되어버림.
+     *
+     * hibernate.default_batch_fatch_size, @BatchSize 옵션사용
+     * -> 컬렉션을 갯수만큼 쿼리를 호출하는것이아니라, 위 설정값의 수만큼 in절로 한번에 조회한다.
+     * -> 1 + N -> 1 + 1 로 최적화 된다.
+     *
+     * * 옵션값은 100 ~ 1000 사이로, WAS와 DB가 순간부하를 버틸수있는 갯수로 상황에 맞게 설정하는것이 좋음
+     */
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> ordersV3_Page(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "100") int limit
+    ) {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return collect;
+    }
+
 
     @Getter
     static class OrderDto {
