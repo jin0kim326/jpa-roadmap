@@ -18,9 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
+
+/**
+ * 권장방식
+ * 1. 엔티티 조회 방식으로 우선 접근
+ *  -> 페치조인으로 쿼리 수를 최적화
+ *  -> 컬렉션 최적화
+ *   (페이징필요한경우 : hibernate.default_batch_fetch_size, @BatchSize 최적화)
+ *   (페이징필요없는경우 : 페치 조인 사용)
+ * 2. 엔티티 조회 방식으로 해결이 안되면 DTO 조회 방식
+ * 3. DTO 조회 방식으로 해결이 안되면 NativeSQL / 스프링 JdbcTemplate
+ *
+ */
 
 @RestController
 @RequiredArgsConstructor
