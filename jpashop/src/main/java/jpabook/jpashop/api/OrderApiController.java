@@ -31,6 +31,30 @@ import static java.util.stream.Collectors.*;
  * 2. 엔티티 조회 방식으로 해결이 안되면 DTO 조회 방식
  * 3. DTO 조회 방식으로 해결이 안되면 NativeSQL / 스프링 JdbcTemplate
  *
+ * OSIV
+ * - Open Session in View:하이버네이트
+ * - Open EntityManager in View:JPA
+ * (관례상 OSIV)
+ *
+ * JPA(영속성 컨텍스트)는 결국엔 디비 커넥션이 필요함. 언제 커넥션을 얻을까?
+ * -> 트랜잭션이 시작될때
+ *
+ * 커넥션의 반환은 언제할까?
+ * -> OSIV 설정값에 따라 다름.
+ *  🔥true인 경우
+ *  * 영속성 컨텍스트가 필요없을떄까지 (API혹은view를 유저에게 반환후) 즉,트랜잭션이 끝나도 반환하지않음
+ *  * 그렇기 때문에 View Template, Controller에서 지얀로딩이 가능했음.
+ *  * 실시간 트랙픽이 중요한 애플리케이션에서는 커넥션이 모자랄 수 있음!!
+ *
+ *  🔥false인 경우
+ *  * 트랜잭션이 끝날때 커넥션반환 / 영속성 컨텍스트 off -> 리소스 낭비 줄임
+ *
+ *  실무에서 OSIV를 끈상태로 복잡성을 관리하는 좋은방법
+ *  1. 커맨드와 쿼리를 분리하는것
+ *  OrderService : 핵심 비즈니스 로직
+ *  OrderQueryService : 화면이나 API에 맞춘 서비스 (주로 읽기 전용 트랜잭션 사용)
+ *
+ *
  */
 
 @RestController
