@@ -1,0 +1,13 @@
+server:
+  port: 8091
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/jpashop
+    username: jin0kim326
+    password: 10041004
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create
