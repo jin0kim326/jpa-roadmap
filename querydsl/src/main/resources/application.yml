@@ -15,6 +15,7 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
+#        use_sql_comments: true // jpql을 보는방법
 
 logging:
   level:

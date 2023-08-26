@@ -12,6 +12,8 @@ import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
 import study.querydsl.entity.Team;
 
+import static study.querydsl.entity.QMember.*;
+
 @SpringBootTest
 @Transactional
 public class QuerydslBasicTest {
@@ -53,11 +55,18 @@ public class QuerydslBasicTest {
 
     @Test
     public void startQuerydsl() {
-        QMember m = new QMember("m");
 
-        Member findMember = queryFactory.select(m)
-                .from(m)
-                .where(m.username.eq("member1"))
+        // Q타입 선업법
+//        QMember m = new QMember("m"); //1. new XXXX
+//        QMember m = QMember.member;   //2. static 🔥이걸로 사용하자.
+
+        //Alias를 다르게해야할때 :  똑같은 테이블을 조인해야할때만 아래처럼 사용
+//        QMember m1 = new QMember("m1");
+
+        Member findMember = queryFactory
+                .select(member)
+                .from(member)
+                .where(member.username.eq("member1"))
                 .fetchOne();
 
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
