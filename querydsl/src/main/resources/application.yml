@@ -4,10 +4,19 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/jpashop
+    url: jdbc:postgresql://localhost:5432/querydsl
     username: jin0kim326
     password: 10041004
   jpa:
     database: postgresql
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+#        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
